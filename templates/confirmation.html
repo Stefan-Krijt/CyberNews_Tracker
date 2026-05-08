@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block title %}Message Sent{% endblock %}
+
+{% block content %}
+    <div class="confirmation-container">
+        <div class="success-icon">✓</div>
+        <h2>Thanks for reaching out, {{ name }}!</h2>
+        <p>Your message has been received.</p>
+        
+        <div class="message-summary">
+            <h3>Message Summary</h3>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Message:</strong></p>
+            <p class="user-message">{{ message }}</p>
+        </div>
+        
+        <p>We'll review your message and get back to you soon.</p>
+        <a href="{{ url_for('news') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+{% endblock %}

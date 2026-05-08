@@ -1,0 +1,59 @@
+<!-- Cookie security demonstration page -->
+{% extends "index.html" %}
+
+{% block title %}Cookie Security Demo{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>HttpOnly Cookie Protection Demo</h2>
+    
+    <!-- Information box about HttpOnly -->
+    <div style="background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3>What are HttpOnly Cookies?</h3>
+        <p>HttpOnly cookies cannot be accessed by JavaScript, protecting them from Cross-Site Scripting (XSS) attacks.</p>
+    </div>
+    
+    <!-- Instructions for the user -->
+    <div style="text-align: left;">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Open your browser's Developer Tools (F12)</li>
+            <li>Go to the <strong>Console</strong> tab</li>
+            <li>Type <code>document.cookie</code> and press Enter</li>
+            <li>Observe which cookie appears!</li>
+        </ol>
+    </div>
+    
+    <!-- Results display -->
+    <div class="message-summary">
+        <h3>What You'll See:</h3>
+        <p><strong>JavaScript Accessible Cookie:</strong> <code id="jsCookieStatus">Loading...</code></p>
+        <p><strong>HttpOnly Protected Cookie:</strong> 🔒 <strong>NOT accessible via JavaScript</strong></p>
+    </div>
+    
+    <!-- Button to manually check cookies -->
+    <button onclick="checkCookies()" class="submit-btn" style="margin-top: 20px;">Try document.cookie Now</button>
+    
+    <!-- Link back to dashboard -->
+    <p style="margin-top: 20px;">
+        <a href="{{ url_for('news') }}" class="back-link">← Back to Dashboard</a>
+    </p>
+</div>
+
+<script>
+    // JavaScript function to check and display accessible cookies
+    function checkCookies() {
+        var cookies = document.cookie;
+        if (cookies.includes('js_accessible_cookie')) {
+            document.getElementById('jsCookieStatus').innerHTML = '✓ Found! "js_accessible_cookie" is visible: ' + cookies;
+            document.getElementById('jsCookieStatus').style.color = 'green';
+        } else {
+            document.getElementById('jsCookieStatus').innerHTML = '❌ Not found (check if cookies are enabled)';
+            document.getElementById('jsCookieStatus').style.color = 'red';
+        }
+    }
+    
+    // Run automatically when page loads
+    checkCookies();
+</script>
+{% endblock %}

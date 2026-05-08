@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+    <div class="dashboard-header">
+        <h2>Welcome back, {{ username }}!</h2>
+        <p class="last-updated">Last updated: {{ last_updated }}</p>
+    </div>
+
+    <div class="articles-container">
+        <h3>Top Stories</h3>
+        <div class="articles-grid">
+            {% for article in articles %}
+                <article class="news-item">
+                    <h4>{{ article.title }}</h4>
+                    <p class="news-date">{{ article.date }}</p>
+                    <p class="news-summary">{{ article.summary }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="height: 40px;"></div>
+    
+    <button id="refreshButton" class="user-refresh-btn">Refresh Headlines</button>
+    <section id="headlinesContainer"></section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const headlines = [
+        "Breaking: Cyber Attack Hits Major Company!",
+        "New Security Patch Released Today",
+        "AI Tool Detects Malware Faster Than Ever",
+        "Phishing Scam Targets Online Users"
+    ];
+
+    const descriptions = [
+        "Experts are analyzing the incident to prevent future breaches.",
+        "Make sure to update your systems to stay safe.",
+        "AI algorithms are now capable of spotting threats automatically.",
+        "Users are advised to verify all emails before clicking links."
+    ];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const button = document.getElementById("refreshButton");
+        const container = document.getElementById("headlinesContainer");
+
+        if (button && container) {
+            button.addEventListener("click", function() {
+                const randomHeadline = headlines[Math.floor(Math.random() * headlines.length)];
+                const newHeadline = document.createElement("h3");
+                newHeadline.textContent = randomHeadline;
+
+                const randomDesc = descriptions[Math.floor(Math.random() * descriptions.length)];
+                const newDesc = document.createElement("p");
+                newDesc.textContent = randomDesc;
+
+                const article = document.createElement("article");
+                article.appendChild(newHeadline);
+                article.appendChild(newDesc);
+                container.appendChild(article);
+            });
+        }
+    });
+</script>
+{% endblock %}
