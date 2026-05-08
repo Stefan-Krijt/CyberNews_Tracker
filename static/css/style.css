@@ -1,0 +1,517 @@
+/* 1. Use Arial font for all text */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. Center all text on the page */
+body {
+    text-align: center;
+}
+
+/* 3. Set background color of the page (body) to light gray */
+body {
+    background-color: #f4f4f4;
+}
+
+/* 4. Header and footer: dark background, white text */
+header, footer {
+    background-color: #333;
+    color: white;
+}
+
+/* Header styles - split into top banner and navigation */
+header {
+    color: white;
+    padding: 0;
+}
+
+/* Top banner (title and greeting) */
+.header-top {
+    position: relative;
+    background-image: url('/static/images/header-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.header-top::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+}
+
+.header-top-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.header-top h1,
+.header-top h2 {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    margin: 0;
+}
+
+.header-top h1 {
+    margin-bottom: 10px;
+}
+
+/* Navigation section */
+.header-nav {
+    background-color: #333;
+}
+
+.header-nav nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    min-height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* FIX: Changed gap to margin-right for better control */
+.nav-left {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-left li {
+    margin-right: 40px;
+}
+
+.nav-left li:last-child {
+    margin-right: 0;
+}
+
+.nav-right {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.nav-right li {
+    margin-right: 30px;
+}
+
+.nav-right li:last-child {
+    margin-right: 0;
+}
+
+.nav-left li, .nav-right li {
+    display: inline-block;
+}
+
+.nav-left li a, .nav-right li a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 0;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.nav-left li a:hover, .nav-right li a:hover {
+    color: #ccc;
+}
+
+/* Main content area */
+main {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+    line-height: 1;
+}
+
+/* ===== Dashboard Header Styles ===== */
+.dashboard-header {
+    max-width: 1400px;
+    margin: 0 auto 30px auto;
+    background-color: white;
+    padding: 25px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.dashboard-header h2 {
+    color: #333;
+    margin: 0 0 10px 0;
+}
+
+.last-updated {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* ===== ARTICLES CONTAINER - MULTI-COLUMN GRID ===== */
+.articles-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.articles-container h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+/* FIX: Changed grid to use percentage-based gaps */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Individual article cards */
+.news-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.news-item h4 {
+    color: #333;
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+}
+
+.news-date {
+    color: #888;
+    font-size: 0.85em;
+    margin: 0 0 15px 0;
+}
+
+.news-summary {
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+/* ===== ADMIN SESSIONS GRID ===== */
+.admin-section {
+    max-width: 1400px;
+    margin: 60px auto 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.admin-section h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* FIX: Changed grid to use percentage-based gaps */
+.sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.session-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    border-left: 4px solid #333;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.session-card p {
+    margin: 8px 0;
+}
+
+.session-card strong {
+    color: #333;
+}
+
+/* ===== REFRESH BUTTON ===== */
+#refreshButton {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 40px auto 20px auto;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+#refreshButton:hover {
+    background-color: #555;
+}
+
+/* ===== HEADLINES CONTAINER ===== */
+#headlinesContainer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: left;
+}
+
+#headlinesContainer article {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#headlinesContainer article:last-child {
+    margin-bottom: 0;
+}
+
+#headlinesContainer h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+#headlinesContainer p {
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* ===== CONTACT FORM STYLES ===== */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.form-container p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 5px rgba(51, 51, 51, 0.2);
+}
+
+.submit-btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #555;
+}
+
+/* ===== CONFIRMATION PAGE STYLES ===== */
+.confirmation-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 40px 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.confirmation-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.confirmation-container p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.message-summary {
+    background-color: #f9f9f9;
+    border-left: 4px solid #333;
+    padding: 20px;
+    margin: 25px 0;
+    text-align: left;
+}
+
+.message-summary h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.user-message {
+    background-color: #f0f0f0;
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.back-link {
+    display: inline-block;
+    color: #333;
+    text-decoration: none;
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/* ===== RESPONSIVE BEHAVIOR ===== */
+@media (max-width: 1100px) {
+    .articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .sessions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .nav-left li {
+        margin-right: 25px;
+    }
+    
+    .nav-right li {
+        margin-right: 20px;
+    }
+}
+
+@media (max-width: 700px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sessions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-nav nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 20px;
+    }
+    
+    .nav-left, .nav-right {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .nav-left li, .nav-right li {
+        margin-right: 20px;
+    }
+    
+    .nav-left li:last-child,
+    .nav-right li:last-child {
+        margin-right: 0;
+    }
+    
+    .dashboard-header {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-left li {
+        margin-right: 15px;
+    }
+    
+    .nav-right li {
+        margin-right: 12px;
+    }
+}
