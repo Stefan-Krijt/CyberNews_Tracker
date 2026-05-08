@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberNews Tracker - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="header-top">
+            <div class="header-top-container">
+                <h1>CyberNews Tracker</h1>
+                <h2 id="greetingMessage"></h2>
+            </div>
+        </div>
+
+        <div class="header-nav">
+            <nav>
+                <ul class="nav-left">
+                    <li><a href="{{ url_for('user_dashboard') }}">Dashboard</a></li>
+                    <li><a href="#">Vulnerabilities</a></li>
+                    <li><a href="#">Cybercrime</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+                
+                <ul class="nav-right">
+                    {% if session_role %}
+                        {% if session_role == 'admin' %}
+                            <li><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('login_page') }}">Login ({{ session_role }})</a></li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login_page') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+    {% block content %}
+    {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2026 CyberNews Tracker</p>
+    </footer>
+
+    <script>
+    // Greeting
+        const hour = new Date().getHours();
+        const greetingElement = document.getElementById("greetingMessage");
+
+        let greeting;
+
+        if (hour < 12) {
+            greeting = "Good Morning, Cyber Explorer!";
+        } else if (hour >= 12 && hour <= 18) {
+            greeting = "Good Afternoon, Cyber Defender!";
+        } else {
+            greeting = "Good Evening, Night Watcher!";
+        }
+
+        greetingElement.textContent = greeting;
+
+        console.log("Greeting displayed:", greeting);
+    </script>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+</html>
