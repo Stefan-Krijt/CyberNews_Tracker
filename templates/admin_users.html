@@ -1,0 +1,70 @@
+{% extends "index.html" %}
+
+{% block title %}Admin - User Management{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h2>👥 User Management</h2>
+    
+    {% if get_flashed_messages() %}
+        {% for message in get_flashed_messages(with_categories=true) %}
+            <div class="{% if message[0] == 'success' %}success-message{% else %}error-message{% endif %}">
+                {{ message[1] }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <table class="users-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Token Type</th>
+                <th>Token</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <form action="{{ url_for('admin_update_role') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <select name="role" class="select-small" onchange="this.form.submit()">
+                            <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('admin_assign_token') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <select name="token_type" class="select-small" onchange="this.form.submit()">
+                            <option value="readonly" {% if user.token_role == 'readonly' %}selected{% endif %}>Readonly</option>
+                            <option value="analyst" {% if user.token_role == 'analyst' %}selected{% endif %}>Analyst</option>
+                            <option value="admin" {% if user.token_role == 'admin' %}selected{% endif %} disabled>Admin (auto)</option>
+                        </select>
+                    </form>
+                </td>
+                <td><code class="token-badge">{{ user.token }}</code></td>
+                <td>{{ user.created_at[:10] }}</td>
+                <td>
+                    {% if user.username != 'Stefan' %}
+                    <form action="{{ url_for('admin_delete_user') }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete {{ user.username }}? This cannot be undone.');">
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <button type="submit" class="btn-small btn-danger">Delete</button>
+                    </form>
+                    {% else %}
+                    <span style="color: #888;">Protected</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

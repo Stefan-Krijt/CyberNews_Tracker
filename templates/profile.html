@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>My Profile</h2>
+    
+    {% if get_flashed_messages() %}
+        {% for message in get_flashed_messages(with_categories=true) %}
+            <div class="{% if message[0] == 'success' %}success-message{% else %}error-message{% endif %}">
+                {{ message[1] }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- User Info Section -->
+    <div class="profile-section">
+        <h3>Account Information</h3>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Username:</div>
+                <div class="info-value">{{ username }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Role:</div>
+                <div class="info-value">{{ role|upper }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value">{{ email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Member since:</div>
+                <div class="info-value">{{ created_at }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Intelligence Token:</div>
+                <div class="info-value"><code class="token-value">{{ user_token }}</code></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Update Profile Section -->
+    <div class="profile-section">
+        <h3>Update Email</h3>
+        <form method="POST">
+            <input type="hidden" name="action" value="update_profile">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ email }}" required>
+            </div>
+            <button type="submit" class="form-btn">Update Email</button>
+        </form>
+    </div>
+    
+    <!-- Change Password Section -->
+    <div class="profile-section">
+        <h3>Change Password</h3>
+        <form method="POST">
+            <input type="hidden" name="action" value="change_password">
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" id="current_password" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="form-btn">Change Password</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

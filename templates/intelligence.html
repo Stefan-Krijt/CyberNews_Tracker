@@ -1,0 +1,133 @@
+{% extends "index.html" %}
+
+{% block title %}Intelligence Feed{% endblock %}
+
+{% block content %}
+<div class="intelligence-header">
+    <h2>📡 Secure Intelligence Feed</h2>
+    <p>This section contains sensitive threat intelligence data.<br>
+    Access requires a valid Bearer token.</p>
+</div>
+
+<div class="intelligence-controls">
+    <button id="fetchIntelBtn" class="intel-btn">🔐 Fetch Intelligence</button>
+</div>
+
+<div id="intelligenceReports" class="reports-container">
+    <!-- Intelligence reports will appear here -->
+</div>
+
+
+<script>
+    let fetchCount = 0;
+    
+    function displayReport(data) {
+        const container = document.getElementById('intelligenceReports');
+        
+        // Add spacer before the new fetch group (except for first fetch)
+        if (container.children.length > 0) {
+            const spacer = document.createElement('div');
+            spacer.className = 'fetch-group-spacer';
+            container.appendChild(spacer);
+        }
+        
+        // Create header section with user info
+        const userHeader = document.createElement('div');
+        userHeader.className = 'info-message';
+        userHeader.innerHTML = `
+            <strong>✓ Fetch #${++fetchCount}</strong> | Authenticated as: ${data.user} | Role: ${data.role.toUpperCase()} | ${data.message}
+        `;
+        container.appendChild(userHeader);
+        
+        // Display each report as a card
+        data.reports.forEach((report, index) => {
+            const reportDiv = document.createElement('div');
+            reportDiv.className = 'report-card';
+            
+            let severityClass = '';
+            switch(report.severity) {
+                case 'CRITICAL': severityClass = 'CRITICAL'; break;
+                case 'HIGH': severityClass = 'HIGH'; break;
+                case 'MEDIUM': severityClass = 'MEDIUM'; break;
+                default: severityClass = 'LOW';
+            }
+            
+            let detailsHtml = '';
+            if (report.indicators) {
+                detailsHtml += `<div class="meta"><span>🔍 Indicators: ${report.indicators.join(', ')}</span></div>`;
+            }
+            if (report.mitre_techniques) {
+                detailsHtml += `<div class="meta"><span>🎯 MITRE ATT&CK: ${report.mitre_techniques.join(', ')}</span></div>`;
+            }
+            
+            const timestamp = new Date().toLocaleString();
+            
+            reportDiv.innerHTML = `
+                <h4>📄 ${report.title}</h4>
+                <div class="severity ${severityClass}">${report.severity}</div>
+                <div class="summary">${report.summary}</div>
+                ${detailsHtml}
+                <div class="meta"><span>🕐 ${timestamp}</span></div>
+            `;
+            container.appendChild(reportDiv);
+        });
+    }
+    
+    function displayError(message) {
+        const container = document.getElementById('intelligenceReports');
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <strong>⛔ Access Denied</strong><br>
+            ${message}
+        `;
+        container.appendChild(errorDiv);
+    }
+    
+    document.getElementById('fetchIntelBtn').addEventListener('click', async function() {
+        const token = prompt('Enter your Bearer token:');
+        
+        if (!token) {
+            alert('Token is required to fetch intelligence data.');
+            return;
+        }
+        
+        // Clear ALL previous error messages before new attempt
+        const container = document.getElementById('intelligenceReports');
+        const errorMessages = container.querySelectorAll('.error-message');
+        errorMessages.forEach(error => error.remove());
+        
+        const fetchBtn = document.getElementById('fetchIntelBtn');
+        const originalText = fetchBtn.textContent;
+        fetchBtn.textContent = '⏳ Fetching...';
+        fetchBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/intelligence-feed', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok || data.error) {
+                displayError(data.message || 'Invalid token. Access denied.');
+                alert(`Access Denied: ${data.message || 'Invalid token'}`);
+            } else {
+                displayReport(data);
+            }
+        } catch (error) {
+            console.error('Error fetching intelligence:', error);
+            displayError('Network error. Please try again.');
+            alert('Network error. Could not fetch intelligence data.');
+        } finally {
+            fetchBtn.textContent = originalText;
+            fetchBtn.disabled = false;
+        }
+    });
+</script>
+{% endblock %}
