@@ -20,17 +20,18 @@
             <nav>
                 <ul class="nav-left">
                     <li><a href="{{ url_for('user_dashboard') }}">Dashboard</a></li>
-                    <li><a href="#">Vulnerabilities</a></li>
-                    <li><a href="#">Cybercrime</a></li>
+                    <li><a href="{{ url_for('vulnerabilities') }}">Vulnerabilities</a></li>
+                    <li><a href="{{ url_for('intelligence') }}">Intelligence</a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                 </ul>
                 
                 <ul class="nav-right">
                     {% if session_role %}
                         {% if session_role == 'admin' %}
+                            <li><a href="{{ url_for('admin_users') }}">Admin</a></li>
                             <li><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
                         {% endif %}
-                        <li><a href="{{ url_for('login_page') }}">Login ({{ session_role }})</a></li>
+                        <li><a href="{{ url_for('profile') }}">{{ username }} ({{ session_role }})</a></li>
                         <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login_page') }}">Login</a></li>
