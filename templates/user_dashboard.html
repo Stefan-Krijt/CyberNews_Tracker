@@ -5,63 +5,166 @@
 {% block content %}
     <div class="dashboard-header">
         <h2>Welcome back, {{ username }}!</h2>
-        <p class="last-updated">Last updated: {{ last_updated }}</p>
+        <p class="last-updated">Last updated: <span id="lastUpdated">{{ last_updated }}</span></p>
     </div>
 
     <div class="articles-container">
-        <h3>Top Stories</h3>
-        <div class="articles-grid">
-            {% for article in articles %}
-                <article class="news-item">
-                    <h4>{{ article.title }}</h4>
-                    <p class="news-date">{{ article.date }}</p>
-                    <p class="news-summary">{{ article.summary }}</p>
-                </article>
-            {% endfor %}
-        </div>
+        <h3>Top Cybersecurity News</h3>
+        <div id="headlinesContainer" class="news-list"></div>
     </div>
 
-    <div style="height: 40px;"></div>
-    
-    <button id="refreshButton" class="user-refresh-btn">Refresh Headlines</button>
-    <section id="headlinesContainer"></section>
+    <div class="refresh-section">
+        <button id="refreshButton" class="refresh-btn">Refresh Headlines</button>
+    </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    const headlines = [
-        "Breaking: Cyber Attack Hits Major Company!",
-        "New Security Patch Released Today",
-        "AI Tool Detects Malware Faster Than Ever",
-        "Phishing Scam Targets Online Users"
-    ];
-
-    const descriptions = [
-        "Experts are analyzing the incident to prevent future breaches.",
-        "Make sure to update your systems to stay safe.",
-        "AI algorithms are now capable of spotting threats automatically.",
-        "Users are advised to verify all emails before clicking links."
-    ];
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const button = document.getElementById("refreshButton");
-        const container = document.getElementById("headlinesContainer");
-
-        if (button && container) {
-            button.addEventListener("click", function() {
-                const randomHeadline = headlines[Math.floor(Math.random() * headlines.length)];
-                const newHeadline = document.createElement("h3");
-                newHeadline.textContent = randomHeadline;
-
-                const randomDesc = descriptions[Math.floor(Math.random() * descriptions.length)];
-                const newDesc = document.createElement("p");
-                newDesc.textContent = randomDesc;
-
-                const article = document.createElement("article");
-                article.appendChild(newHeadline);
-                article.appendChild(newDesc);
-                container.appendChild(article);
-            });
+    // Store static news for fallback
+    let staticNewsCache = [];
+    
+    function displayArticles(articles, isError = false) {
+        const container = document.getElementById('headlinesContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (isError) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'news-item error';
+            errorDiv.textContent = 'News unavailable right now. Please try again later.';
+            container.appendChild(errorDiv);
+            return;
+        }
+        
+        if (!articles || articles.length === 0) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'news-item error';
+            errorDiv.textContent = 'No news articles available at this time.';
+            container.appendChild(errorDiv);
+            return;
+        }
+        
+        articles.forEach(article => {
+            const articleDiv = document.createElement('div');
+            articleDiv.className = 'news-item';
+            
+            const titleLink = document.createElement('a');
+            titleLink.href = article.url || '#';
+            titleLink.textContent = article.title || 'No title';
+            titleLink.target = '_blank';
+            titleLink.className = 'news-title';
+            
+            const sourceSpan = document.createElement('span');
+            sourceSpan.className = 'news-source';
+            sourceSpan.textContent = article.source || 'Unknown source';
+            
+            articleDiv.appendChild(titleLink);
+            articleDiv.appendChild(sourceSpan);
+            container.appendChild(articleDiv);
+        });
+    }
+    
+    async function fetchStaticNews() {
+        try {
+            const response = await fetch('/api/news');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            
+            // Cache the static news for fallback
+            staticNewsCache = data;
+            displayArticles(data);
+            
+            // Update last updated timestamp
+            const now = new Date();
+            const lastUpdatedSpan = document.getElementById('lastUpdated');
+            if (lastUpdatedSpan) {
+                lastUpdatedSpan.textContent = now.toLocaleString();
+            }
+        } catch (error) {
+            console.error('Error fetching static news:', error);
+            displayArticles([], true);
+        }
+    }
+    
+    async function fetchLiveNews() {
+        const refreshBtn = document.getElementById('refreshButton');
+        const originalText = refreshBtn.textContent;
+        refreshBtn.textContent = 'Loading...';
+        refreshBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/live-news');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Check if the API returned an error
+            if (data.error) {
+                console.warn('API error:', data.message);
+                // Fallback to static news
+                if (staticNewsCache.length > 0) {
+                    displayArticles(staticNewsCache);
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'news-item error';
+                    errorMsg.style.marginTop = '10px';
+                    errorMsg.textContent = 'Live news unavailable. Showing static headlines.';
+                    document.getElementById('headlinesContainer').appendChild(errorMsg);
+                } else {
+                    displayArticles([], true);
+                }
+            } else if (data.articles && data.articles.length > 0) {
+                displayArticles(data.articles);
+            } else {
+                // No articles returned - fallback to static
+                if (staticNewsCache.length > 0) {
+                    displayArticles(staticNewsCache);
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'news-item error';
+                    errorMsg.style.marginTop = '10px';
+                    errorMsg.textContent = 'No live news available. Showing static headlines.';
+                    document.getElementById('headlinesContainer').appendChild(errorMsg);
+                } else {
+                    displayArticles([], true);
+                }
+            }
+            
+            // Update last updated timestamp
+            const now = new Date();
+            const lastUpdatedSpan = document.getElementById('lastUpdated');
+            if (lastUpdatedSpan) {
+                lastUpdatedSpan.textContent = now.toLocaleString();
+            }
+            
+        } catch (error) {
+            console.error('Error fetching live news:', error);
+            // Fallback to static news on network error
+            if (staticNewsCache.length > 0) {
+                displayArticles(staticNewsCache);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'news-item error';
+                errorMsg.style.marginTop = '10px';
+                errorMsg.textContent = 'News unavailable right now. Please try again later.';
+                document.getElementById('headlinesContainer').appendChild(errorMsg);
+            } else {
+                displayArticles([], true);
+            }
+        } finally {
+            refreshBtn.textContent = originalText;
+            refreshBtn.disabled = false;
+        }
+    }
+    
+    // Load static news when page first loads
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchStaticNews();
+        
+        const refreshBtn = document.getElementById('refreshButton');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', fetchLiveNews);
         }
     });
 </script>
